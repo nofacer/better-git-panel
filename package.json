@@ -14,8 +14,9 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "better-git-panel.helloWorld",
-				"title": "Hello World"
+				"command": "better-git-panel.refreshBranches",
+				"title": "Refresh Branches",
+				"icon": "$(refresh)"
 			}
 		],
 		"viewsContainers": {
@@ -32,7 +33,7 @@
 				{
 					"id": "branches",
 					"name": "Branches",
-					"icon": ""
+					"icon": "$(git-branch)"
 				}
 			]
 		}
