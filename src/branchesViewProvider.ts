@@ -10,10 +10,14 @@ class BranchItem extends vscode.TreeItem {
 		public readonly label: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly type: 'local' | 'remote' | 'root' | 'error',
-		public readonly branchName?: string
+		public readonly branchName?: string,
+		public readonly isCurrentBranch: boolean = false
 	) {
 		super(label, collapsibleState);
 		this.contextValue = type;
+		if (isCurrentBranch) {
+			this.iconPath = new vscode.ThemeIcon('star-full');
+		}
 	}
 }
 
@@ -21,7 +25,7 @@ export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem>
 	private _onDidChangeTreeData: vscode.EventEmitter<BranchItem | undefined | null | void> = new vscode.EventEmitter<BranchItem | undefined | null | void>();
 	readonly onDidChangeTreeData: vscode.Event<BranchItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-	constructor(private workspaceRoot: string | undefined) {}
+	constructor(private workspaceRoot: string | undefined) { }
 
 	refresh(): void {
 		this._onDidChangeTreeData.fire();
@@ -53,10 +57,16 @@ export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem>
 
 		if (element.type === 'root') {
 			if (element.label === 'Local Branches') {
+				const { stdout: currentBranchStdout } = await execAsync('git symbolic-ref --short HEAD', { cwd: this.workspaceRoot });
+				const currentBranch = currentBranchStdout.trim();
+
 				const { stdout } = await execAsync('git branch --format="%(refname:short)"', { cwd: this.workspaceRoot });
 				return stdout.split('\n')
 					.filter(branch => branch.trim())
-					.map(branch => new BranchItem(branch.trim(), vscode.TreeItemCollapsibleState.None, 'local', branch.trim()));
+					.map(branch => {
+						const trimmed = branch.trim();
+						return new BranchItem(trimmed, vscode.TreeItemCollapsibleState.None, 'local', trimmed, trimmed === currentBranch);
+					});
 			} else if (element.label === 'Remote Branches') {
 				const { stdout } = await execAsync('git branch -r --format="%(refname:short)"', { cwd: this.workspaceRoot });
 				return stdout.split('\n')

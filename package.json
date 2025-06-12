@@ -42,6 +42,15 @@
 					"icon": "$(git-branch)"
 				}
 			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "better-git-panel.refreshBranches",
+					"when": "view == branches",
+					"group": "navigation"
+				}
+			]
 		}
 	},
 	"scripts": {
