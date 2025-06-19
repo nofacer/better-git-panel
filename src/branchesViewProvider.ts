@@ -5,6 +5,25 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+// Create an output channel for logging git commands
+const gitOutputChannel = vscode.window.createOutputChannel('Better Git Panel');
+
+// Wrapper to log git commands and their output/errors
+async function runGitCommand(command: string, cwd: string) {
+	gitOutputChannel.appendLine(`[CMD] ${command}`);
+	try {
+		const result = await execAsync(command, { cwd });
+		gitOutputChannel.appendLine(`[OUT] ${result.stdout}`);
+		if (result.stderr) {
+			gitOutputChannel.appendLine(`[ERR] ${result.stderr}`);
+		}
+		return result;
+	} catch (error: any) {
+		gitOutputChannel.appendLine(`[FAIL] ${error.message}`);
+		throw error;
+	}
+}
+
 class BranchItem extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
@@ -50,17 +69,17 @@ export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem>
 
 		try {
 			// Check if it's a git repository
-			await execAsync('git rev-parse --is-inside-work-tree', { cwd: this.workspaceRoot });
+			await runGitCommand('git rev-parse --is-inside-work-tree', this.workspaceRoot);
 		} catch (error) {
 			return [new BranchItem('Not a git repository', vscode.TreeItemCollapsibleState.None, 'error')];
 		}
 
 		if (element.type === 'root') {
 			if (element.label === 'Local Branches') {
-				const { stdout: currentBranchStdout } = await execAsync('git symbolic-ref --short HEAD', { cwd: this.workspaceRoot });
+				const { stdout: currentBranchStdout } = await runGitCommand('git symbolic-ref --short HEAD', this.workspaceRoot);
 				const currentBranch = currentBranchStdout.trim();
 
-				const { stdout } = await execAsync('git branch --format="%(refname:short)"', { cwd: this.workspaceRoot });
+				const { stdout } = await runGitCommand('git branch --format="%(refname:short)"', this.workspaceRoot);
 				return stdout.split('\n')
 					.filter(branch => branch.trim())
 					.map(branch => {
@@ -68,7 +87,7 @@ export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem>
 						return new BranchItem(trimmed, vscode.TreeItemCollapsibleState.None, 'local', trimmed, trimmed === currentBranch);
 					});
 			} else if (element.label === 'Remote Branches') {
-				const { stdout } = await execAsync('git branch -r --format="%(refname:short)"', { cwd: this.workspaceRoot });
+				const { stdout } = await runGitCommand('git branch -r --format="%(refname:short)"', this.workspaceRoot);
 				return stdout.split('\n')
 					.filter(branch => branch.trim())
 					.map(branch => new BranchItem(branch.trim(), vscode.TreeItemCollapsibleState.None, 'remote', branch.trim()));
