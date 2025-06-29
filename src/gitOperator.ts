@@ -52,4 +52,20 @@ export class GitOperator {
 			.filter(branch => branch.trim())
 			.map(branch => branch.trim());
 	}
+
+	async checkoutBranch(branch: string) {
+		try {
+			await this.runGitCommand(`git checkout ${branch}`);
+		} catch (e) {
+			this.gitOutputChannel.appendLine(`[ERR] failed to checkout code: ${e}`);
+		}
+	}
+
+	async deleteLocalBranch(branch: string) {
+		try {
+			await this.runGitCommand(`git branch -D ${branch}`);
+		} catch (e) {
+			this.gitOutputChannel.appendLine(`[ERR] failed to delete branch: ${e}`);
+		}
+	}
 }

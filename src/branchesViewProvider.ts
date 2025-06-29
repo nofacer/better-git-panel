@@ -1,27 +1,14 @@
 import * as vscode from 'vscode';
 import { GitOperator } from './gitOperator';
+import { BranchItem } from './branchItem';
 
-class BranchItem extends vscode.TreeItem {
-	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-		public readonly type: 'local' | 'remote' | 'root' | 'error',
-		public readonly branchName?: string,
-		public readonly isCurrentBranch: boolean = false
-	) {
-		super(label, collapsibleState);
-		this.contextValue = type;
-		if (isCurrentBranch) {
-			this.iconPath = new vscode.ThemeIcon('arrow-small-right');
-		}
-	}
-}
+
 
 export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<BranchItem | undefined | null | void> = new vscode.EventEmitter<BranchItem | undefined | null | void>();
 	readonly onDidChangeTreeData: vscode.Event<BranchItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-	private gitOperator: GitOperator;
+	public gitOperator: GitOperator;
 	private gitOutputChannel = vscode.window.createOutputChannel('Better Git Panel');
 
 	constructor(private workspaceRoot: string | undefined) {
@@ -72,6 +59,7 @@ export class BranchesViewProvider implements vscode.TreeDataProvider<BranchItem>
 
 		return [];
 	}
+
 
 	getParent?(element: BranchItem): vscode.ProviderResult<BranchItem> {
 		throw new Error('Method not implemented.');

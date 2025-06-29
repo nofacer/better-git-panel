@@ -23,6 +23,14 @@
 				"command": "better-git-panel.refreshBranches",
 				"title": "Refresh Branches",
 				"icon": "$(refresh)"
+			},
+			{
+				"command": "better-git-panel.deleteBranch",
+				"title": "Delete Branch"
+			},
+			{
+				"command": "better-git-panel.checkoutBranch",
+				"title": "Checkout Branch"
 			}
 		],
 		"viewsContainers": {
@@ -48,6 +56,18 @@
 				{
 					"command": "better-git-panel.refreshBranches",
 					"when": "view == branches",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "better-git-panel.deleteBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
+					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.checkoutBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
 					"group": "navigation"
 				}
 			]

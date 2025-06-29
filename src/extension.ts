@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { BranchesViewProvider } from './branchesViewProvider';
+import { BranchItem } from './branchItem';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "better-git-panel" is now active!');
@@ -12,7 +13,22 @@ export function activate(context: vscode.ExtensionContext) {
 		branchesProvider.refresh();
 	});
 
+	const deleteBranchCommand = vscode.commands.registerCommand('better-git-panel.deleteBranch', async (item: BranchItem) => {
+		if (item.type === 'local') {
+			await branchesProvider.gitOperator.deleteLocalBranch(item.branchName!);
+		}
+		branchesProvider.refresh();
+	});
+
+	const checkoutCommand = vscode.commands.registerCommand('better-git-panel.checkoutBranch', async (item: BranchItem) => {
+		await branchesProvider.gitOperator.checkoutBranch(item.branchName!);
+		branchesProvider.refresh();
+	});
+
 	context.subscriptions.push(refreshCommand);
+	context.subscriptions.push(deleteBranchCommand);
+	context.subscriptions.push(checkoutCommand);
+
 }
 
 export function deactivate() { }
