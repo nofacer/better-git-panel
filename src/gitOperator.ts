@@ -68,4 +68,14 @@ export class GitOperator {
 			this.gitOutputChannel.appendLine(`[ERR] failed to delete branch: ${e}`);
 		}
 	}
+
+	async rebaseCurrentBranch() {
+		try {
+			const currentBranch = await this.getCurrentBranch();
+			await this.runGitCommand('git fetch origin --recurse-submodules=no --progress --prune');
+			await this.runGitCommand(`git merge origin/${currentBranch}`);
+		} catch (e) {
+			this.gitOutputChannel.appendLine(`[ERR] failed to rebase current branch: ${e}`);
+		}
+	}
 }

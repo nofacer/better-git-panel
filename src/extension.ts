@@ -25,9 +25,15 @@ export function activate(context: vscode.ExtensionContext) {
 		branchesProvider.refresh();
 	});
 
+	const rebaseCurrentBranchCommand = vscode.commands.registerCommand('better-git-panel.rebaseCurrentBranch',async ()=>{
+		await branchesProvider.gitOperator.rebaseCurrentBranch();
+		branchesProvider.refresh();
+	});
+
 	context.subscriptions.push(refreshCommand);
 	context.subscriptions.push(deleteBranchCommand);
 	context.subscriptions.push(checkoutCommand);
+	context.subscriptions.push(rebaseCurrentBranchCommand);
 
 }
 

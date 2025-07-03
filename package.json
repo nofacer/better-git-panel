@@ -2,7 +2,7 @@
 	"name": "better-git-panel",
 	"displayName": "Better Git Panel",
 	"description": "A better panel to perform git actions quickly.",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nofacer/better-git-panel"
@@ -31,6 +31,11 @@
 			{
 				"command": "better-git-panel.checkoutBranch",
 				"title": "Checkout Branch"
+			},
+			{
+				"command": "better-git-panel.rebaseCurrentBranch",
+				"title": "Rebase the current branch on top of incoming changes",
+				"icon": "$(git-pull-request)"
 			}
 		],
 		"viewsContainers": {
@@ -55,6 +60,11 @@
 			"view/title": [
 				{
 					"command": "better-git-panel.refreshBranches",
+					"when": "view == branches",
+					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.rebaseCurrentBranch",
 					"when": "view == branches",
 					"group": "navigation"
 				}
