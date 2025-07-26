@@ -48,7 +48,7 @@ jobs:
             echo "🔧 Pre-release version: $NEW_VERSION"
             jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
             echo "FINAL_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-          elif [ "$BRANCH" = "release" ]; then
+          elif [ "$BRANCH" = "main" ]; then
             PATCH=$((RUN_NUMBER + 1))
             NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
             echo "🚀 Release version: $NEW_VERSION"
