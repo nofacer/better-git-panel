@@ -30,11 +30,23 @@ export function activate(context: vscode.ExtensionContext) {
 		branchesProvider.refresh();
 	});
 
+	const createBranchCommand = vscode.commands.registerCommand('better-git-panel.createBranch', async (item: BranchItem) => {
+		const branchName = await vscode.window.showInputBox({
+			prompt: 'Enter the name of the new branch',
+			placeHolder: 'e.g. feature/new-feature'
+		});
+		if (branchName) {
+			await branchesProvider.gitOperator.createBranch(item.branchName!, branchName);	
+			await branchesProvider.gitOperator.checkoutBranch(branchName);
+		}
+		branchesProvider.refresh();
+	});
+
 	context.subscriptions.push(refreshCommand);
 	context.subscriptions.push(deleteBranchCommand);
 	context.subscriptions.push(checkoutCommand);
 	context.subscriptions.push(rebaseCurrentBranchCommand);
-
+	context.subscriptions.push(createBranchCommand);
 }
 
 export function deactivate() { }

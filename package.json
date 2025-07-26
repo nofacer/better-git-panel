@@ -2,7 +2,7 @@
 	"name": "better-git-panel",
 	"displayName": "Better Git Panel",
 	"description": "A better panel to perform git actions quickly.",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nofacer/better-git-panel"
@@ -36,6 +36,11 @@
 				"command": "better-git-panel.rebaseCurrentBranch",
 				"title": "Rebase the current branch on top of incoming changes",
 				"icon": "$(git-pull-request)"
+			},
+			{
+				"command": "better-git-panel.createBranch",
+				"title": "Create Branch",
+				"icon": "$(git-branch)"
 			}
 		],
 		"viewsContainers": {

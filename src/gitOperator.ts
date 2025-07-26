@@ -78,4 +78,12 @@ export class GitOperator {
 			this.gitOutputChannel.appendLine(`[ERR] failed to rebase current branch: ${e}`);
 		}
 	}
+
+	async createBranch(originBranch: string, newBranch: string) {
+		try {
+			await this.runGitCommand(`git checkout -b ${newBranch} ${originBranch}`);
+		} catch (e) {
+			this.gitOutputChannel.appendLine(`[ERR] failed to create branch: ${e}`);
+		}
+	}
 }
