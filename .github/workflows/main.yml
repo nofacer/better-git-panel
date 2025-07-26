@@ -21,7 +21,10 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: | 
+          npm install -g pnpm@latest-10
+          npm install -g @vscode/vsce
+          pnpm install
 
       - name: Read base version from package.json
         id: get_version
@@ -50,9 +53,9 @@ jobs:
         id: package_version
         run: |
           if [ "$BRANCH" = "develop" ]; then
-            npx vsce package --pre-release
+            vsce package --pre-release
           else
-            npx vsce package
+            vsce package
           fi
 
       - name: Publish to VS Code Marketplace
