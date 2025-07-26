@@ -39,7 +39,7 @@ jobs:
           BASE_VERSION="${{ steps.get_version.outputs.VERSION }}"
 
           if [ "$BRANCH" = "develop" ]; then
-            NEW_VERSION="${BASE_VERSION}-rc.${GITHUB_RUN_NUMBER}"
+            NEW_VERSION="${BASE_VERSION}-${GITHUB_RUN_NUMBER}"
             jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
             echo "FINAL_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
           elif [ "$BRANCH" = "release" ]; then
