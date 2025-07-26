@@ -2,7 +2,7 @@
 	"name": "better-git-panel",
 	"displayName": "Better Git Panel",
 	"description": "A better panel to perform git actions quickly.",
-	"version": "0.0.7",
+	"version": "0.1.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/nofacer/better-git-panel"

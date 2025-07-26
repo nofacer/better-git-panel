@@ -21,7 +21,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: | 
+        run: |
           npm install -g pnpm@latest-10
           npm install -g @vscode/vsce
           pnpm install
@@ -37,15 +37,25 @@ jobs:
         run: |
           BRANCH="${GITHUB_REF_NAME}"
           BASE_VERSION="${{ steps.get_version.outputs.VERSION }}"
-
+          RUN_NUMBER="${GITHUB_RUN_NUMBER}"
+          
+          MAJOR=$(echo "$BASE_VERSION" | cut -d. -f1)
+          MINOR=$(echo "$BASE_VERSION" | cut -d. -f2)
+          
           if [ "$BRANCH" = "develop" ]; then
-            NEW_VERSION="${BASE_VERSION}-${GITHUB_RUN_NUMBER}"
+            PATCH=$((RUN_NUMBER))
+            NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+            echo "🔧 Pre-release version: $NEW_VERSION"
             jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
             echo "FINAL_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
           elif [ "$BRANCH" = "release" ]; then
-            echo "FINAL_VERSION=$BASE_VERSION" >> $GITHUB_OUTPUT
+            PATCH=$((RUN_NUMBER + 1))
+            NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+            echo "🚀 Release version: $NEW_VERSION"
+            jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
+            echo "FINAL_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
           else
-            echo "Skipping version change for branch: $BRANCH"
+            echo "Skipping branch: $BRANCH"
             exit 0
           fi
 
