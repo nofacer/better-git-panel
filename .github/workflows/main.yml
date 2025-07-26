@@ -46,8 +46,14 @@ jobs:
             exit 0
           fi
 
-      - name: Build extension
-        run: npm run build
+      - name: Package extension
+        id: package_version
+        run: |
+          if [ "$BRANCH" = "develop" ]; then
+          vsce package --pre-release
+          else
+          vsce package
+          fi
 
       - name: Publish to VS Code Marketplace
         run: npx vsce publish -p ${{ secrets.TOKEN }}
