@@ -50,9 +50,9 @@ jobs:
         id: package_version
         run: |
           if [ "$BRANCH" = "develop" ]; then
-          vsce package --pre-release
+            npx vsce package --pre-release
           else
-          vsce package
+            npx vsce package
           fi
 
       - name: Publish to VS Code Marketplace
