@@ -1,41 +1,115 @@
 {
-  "name": "better-git-panel",
-  "displayName": "Better Git Panel",
-  "description": "A better panel to perform git actions quickly.",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.100.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "better-git-panel.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.100.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "typescript": "^5.8.3",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.5.2"
-  }
+	"name": "better-git-panel",
+	"displayName": "Better Git Panel",
+	"description": "A better panel to perform git actions quickly.",
+	"version": "0.1.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nofacer/better-git-panel"
+	},
+	"icon": "media/git-icon-svgrepo-com.png",
+	"publisher": "dustni",
+	"engines": {
+		"vscode": "^1.90.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "better-git-panel.refreshBranches",
+				"title": "Refresh Branches",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "better-git-panel.deleteBranch",
+				"title": "Delete Branch"
+			},
+			{
+				"command": "better-git-panel.checkoutBranch",
+				"title": "Checkout Branch"
+			},
+			{
+				"command": "better-git-panel.rebaseCurrentBranch",
+				"title": "Rebase the current branch on top of incoming changes",
+				"icon": "$(git-pull-request)"
+			},
+			{
+				"command": "better-git-panel.createBranch",
+				"title": "Create Branch",
+				"icon": "$(git-branch)"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "betterGitPanel",
+					"title": "Better Git Panel",
+					"icon": "media/git-svgrepo-com.svg"
+				}
+			]
+		},
+		"views": {
+			"betterGitPanel": [
+				{
+					"id": "branches",
+					"name": "Branches",
+					"icon": "$(git-branch)"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "better-git-panel.refreshBranches",
+					"when": "view == branches",
+					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.rebaseCurrentBranch",
+					"when": "view == branches",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "better-git-panel.deleteBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
+					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.checkoutBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
+					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.createBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "pnpm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "pnpm run compile && pnpm run lint",
+		"lint": "eslint src",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.90.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "20.x",
+		"@typescript-eslint/eslint-plugin": "^8.31.1",
+		"@typescript-eslint/parser": "^8.31.1",
+		"eslint": "^9.25.1",
+		"typescript": "^5.8.3",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.5.2"
+	}
 }
