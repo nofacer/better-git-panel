@@ -1,0 +1,53 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: vsce
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Read base version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Modify version based on branch
+        id: set_version
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          BASE_VERSION="${{ steps.get_version.outputs.VERSION }}"
+
+          if [ "$BRANCH" = "develop" ]; then
+            NEW_VERSION="${BASE_VERSION}-rc.${GITHUB_RUN_NUMBER}"
+            jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
+            echo "FINAL_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          elif [ "$BRANCH" = "release" ]; then
+            echo "FINAL_VERSION=$BASE_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Skipping version change for branch: $BRANCH"
+            exit 0
+          fi
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Publish to VS Code Marketplace
+        run: npx vsce publish -p ${{ secrets.TOKEN }}
