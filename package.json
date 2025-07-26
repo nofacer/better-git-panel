@@ -84,6 +84,11 @@
 					"command": "better-git-panel.checkoutBranch",
 					"when": "view == branches && (viewItem == local || viewItem == remote)",
 					"group": "navigation"
+				},
+				{
+					"command": "better-git-panel.createBranch",
+					"when": "view == branches && (viewItem == local || viewItem == remote)",
+					"group": "navigation"
 				}
 			]
 		}
